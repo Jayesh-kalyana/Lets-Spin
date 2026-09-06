@@ -1,10 +1,14 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class SlotReel : MonoBehaviour
 {
     // The 3 symbols inside this reel.
     [SerializeField] private RectTransform[] symbols;
+
+    // All symbols that can appear on this reel.
+    [SerializeField] private Sprite[] availableSymbols;
 
     // How long this reel spins.
     [SerializeField] private float spinDuration = 1.5f;
@@ -27,8 +31,14 @@ public class SlotReel : MonoBehaviour
     // Total distance covered by one complete symbol cycle.
     private float loopDistance;
 
-    // Allows other scripts to check the reel state.
+    // Stores the final center symbol index.
+    private int resultIndex;
+
+    // Allows other scripts to check whether the reel is spinning.
     public bool IsSpinning => isSpinning;
+
+    // Allows other scripts to read the final result.
+    public int ResultIndex => resultIndex;
 
 
     private void Awake()
@@ -41,7 +51,7 @@ public class SlotReel : MonoBehaviour
             originalPositions[i] = symbols[i].anchoredPosition;
         }
 
-        // Calculate the average spacing between the symbols.
+        // Calculate the spacing between the symbols.
         float spacing1 = Mathf.Abs(
             originalPositions[0].y - originalPositions[1].y
         );
@@ -50,6 +60,7 @@ public class SlotReel : MonoBehaviour
             originalPositions[1].y - originalPositions[2].y
         );
 
+        // Use the average spacing between both gaps.
         symbolSpacing = (spacing1 + spacing2) / 2f;
 
         // One complete cycle contains all 3 symbol spaces.
@@ -67,10 +78,13 @@ public class SlotReel : MonoBehaviour
     }
 
 
-    // Handles the reel movement.
+    // Handles the reel movement and selects a random result.
     private IEnumerator SpinReel()
     {
         isSpinning = true;
+
+        // Select a random symbol for this reel.
+        resultIndex = Random.Range(0, availableSymbols.Length);
 
         float timer = 0f;
 
@@ -87,9 +101,7 @@ public class SlotReel : MonoBehaviour
                 lowestY = originalPositions[i].y;
         }
 
-        // Keep the complete symbol inside the reel area.
-        float symbolHalfHeight = symbols[0].rect.height * symbols[0].localScale.y / 2f;
-
+        // Set safe limits for symbol recycling.
         float topLimit = highestY + symbolSpacing / 2f;
         float bottomLimit = lowestY - symbolSpacing / 2f;
 
@@ -105,7 +117,7 @@ public class SlotReel : MonoBehaviour
                     // Move the symbol downward.
                     symbol.anchoredPosition += Vector2.down * movement;
 
-                    // Recycle the symbol before it moves too far outside.
+                    // Move the symbol back to the top after passing the bottom.
                     if (symbol.anchoredPosition.y < bottomLimit)
                     {
                         symbol.anchoredPosition += Vector2.up * loopDistance;
@@ -116,7 +128,7 @@ public class SlotReel : MonoBehaviour
                     // Move the symbol upward.
                     symbol.anchoredPosition += Vector2.up * movement;
 
-                    // Recycle the symbol before it moves too far outside.
+                    // Move the symbol back to the bottom after passing the top.
                     if (symbol.anchoredPosition.y > topLimit)
                     {
                         symbol.anchoredPosition -= Vector2.up * loopDistance;
@@ -134,6 +146,10 @@ public class SlotReel : MonoBehaviour
         {
             symbols[i].anchoredPosition = originalPositions[i];
         }
+
+        // Apply the random result to the center symbol.
+        Image centerImage = symbols[1].GetComponent<Image>();
+        centerImage.sprite = availableSymbols[resultIndex];
 
         isSpinning = false;
     }
