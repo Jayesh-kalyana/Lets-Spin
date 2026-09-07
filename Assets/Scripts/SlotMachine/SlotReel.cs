@@ -19,6 +19,9 @@ public class SlotReel : MonoBehaviour
     // True = top to bottom, False = bottom to top.
     [SerializeField] private bool spinDown = true;
 
+    // Small extra distance used to keep symbols away from the visible edge.
+    [SerializeField] private float edgePadding = 8f;
+
     // Prevents multiple spins at the same time.
     private bool isSpinning = false;
 
@@ -43,7 +46,7 @@ public class SlotReel : MonoBehaviour
 
     private void Awake()
     {
-        // Store the original position of every symbol.
+        // Store the exact positions of the symbols from the Inspector.
         originalPositions = new Vector2[symbols.Length];
 
         for (int i = 0; i < symbols.Length; i++)
@@ -63,7 +66,7 @@ public class SlotReel : MonoBehaviour
         // Use the average spacing between both gaps.
         symbolSpacing = (spacing1 + spacing2) / 2f;
 
-        // One complete cycle contains all 3 symbol spaces.
+        // Keep the original 3-symbol cycle distance.
         loopDistance = symbolSpacing * symbols.Length;
     }
 
@@ -71,6 +74,7 @@ public class SlotReel : MonoBehaviour
     // Starts the reel spin.
     public void Spin()
     {
+        // Do not start another spin if this reel is already spinning.
         if (isSpinning)
             return;
 
@@ -82,6 +86,12 @@ public class SlotReel : MonoBehaviour
     private IEnumerator SpinReel()
     {
         isSpinning = true;
+
+        // Always start from the exact manually arranged positions.
+        for (int i = 0; i < symbols.Length; i++)
+        {
+            symbols[i].anchoredPosition = originalPositions[i];
+        }
 
         // Select a random symbol for this reel.
         resultIndex = Random.Range(0, availableSymbols.Length);
@@ -101,9 +111,9 @@ public class SlotReel : MonoBehaviour
                 lowestY = originalPositions[i].y;
         }
 
-        // Set safe limits for symbol recycling.
-        float topLimit = highestY + symbolSpacing / 2f;
-        float bottomLimit = lowestY - symbolSpacing / 2f;
+        // Keep a small gap from the edge before recycling a symbol.
+        float topLimit = highestY + symbolSpacing / 2f - edgePadding;
+        float bottomLimit = lowestY - symbolSpacing / 2f + edgePadding;
 
         while (timer < spinDuration)
         {
@@ -117,7 +127,7 @@ public class SlotReel : MonoBehaviour
                     // Move the symbol downward.
                     symbol.anchoredPosition += Vector2.down * movement;
 
-                    // Move the symbol back to the top after passing the bottom.
+                    // Recycle the symbol smoothly after it reaches the lower limit.
                     if (symbol.anchoredPosition.y < bottomLimit)
                     {
                         symbol.anchoredPosition += Vector2.up * loopDistance;
@@ -128,7 +138,7 @@ public class SlotReel : MonoBehaviour
                     // Move the symbol upward.
                     symbol.anchoredPosition += Vector2.up * movement;
 
-                    // Move the symbol back to the bottom after passing the top.
+                    // Recycle the symbol smoothly after it reaches the upper limit.
                     if (symbol.anchoredPosition.y > topLimit)
                     {
                         symbol.anchoredPosition -= Vector2.up * loopDistance;
@@ -141,7 +151,7 @@ public class SlotReel : MonoBehaviour
             yield return null;
         }
 
-        // Restore the exact manually aligned positions.
+        // Restore the exact manually arranged positions.
         for (int i = 0; i < symbols.Length; i++)
         {
             symbols[i].anchoredPosition = originalPositions[i];
