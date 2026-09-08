@@ -1,63 +1,56 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class SlotLever : MonoBehaviour
 {
-    // Normal lever image.
     [SerializeField] private GameObject normalLever;
-
-    // Pulled lever image.
     [SerializeField] private GameObject pulledLever;
-
-    // Reference to the slot machine controller.
     [SerializeField] private SlotMachineController slotMachine;
 
-    // Prevents the lever from being pulled repeatedly during one pull.
-    private bool isPulling = false;
+    private bool canPull = true;
+    private Button leverButton;
 
+    private void Awake()
+    {
+        leverButton = GetComponent<Button>();
+    }
 
     private void Update()
     {
-        // Pull the lever when Space is pressed.
         if (Input.GetKeyDown(KeyCode.Space))
-        {
             PullLever();
-        }
     }
 
-
-    // Called when the lever is clicked or Space is pressed.
     public void PullLever()
     {
-        if (isPulling)
+        if (!canPull)
             return;
 
-        StartCoroutine(PullLeverAnimation());
+        StartCoroutine(Pull());
     }
 
-
-    // Handles the lever animation.
-    private IEnumerator PullLeverAnimation()
+    // Disable the lever while the reels are spinning.
+    private IEnumerator Pull()
     {
-        isPulling = true;
+        canPull = false;
+        leverButton.interactable = false;
 
-        // Hide the normal lever.
-        normalLever.SetActive(false);
-
-        // Show the pulled lever.
+        normalLever.GetComponent<Image>().enabled = false;
         pulledLever.SetActive(true);
 
-        // Start the slot machine.
-        slotMachine.Spin();
-
-        // Keep the lever pulled briefly.
         yield return new WaitForSeconds(0.25f);
 
-        // Return the lever to its normal position.
         pulledLever.SetActive(false);
-        normalLever.SetActive(true);
+        normalLever.GetComponent<Image>().enabled = true;
 
-        // Allow another lever pull.
-        isPulling = false;
+        slotMachine.Spin();
+    }
+
+    // Enables the lever for the next round.
+    public void EnableLever()
+    {
+        canPull = true;
+        leverButton.interactable = true;
     }
 }

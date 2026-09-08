@@ -8,20 +8,22 @@ public class SlotMachineController : MonoBehaviour
     [SerializeField] private SlotReel reel2;
     [SerializeField] private SlotReel reel3;
 
-    // Time to wait before starting Reel 1 after Reel 3 starts.
+    // Reference to the game manager.
+    [SerializeField] private SlotGameManager gameManager;
+
+    // Time to wait before starting Reel 1.
     [SerializeField] private float reel1StartDelay = 1.5f;
 
-    // Time to wait before starting Reel 2 after Reel 1 starts.
+    // Time to wait before starting Reel 2.
     [SerializeField] private float reel2StartDelay = 1f;
 
-    // Prevents starting another spin while the current spin is running.
+    // Prevents another spin during the current spin.
     private bool isSpinning = false;
 
 
     // Starts a new spin.
     public void Spin()
     {
-        // Ignore the request while the current spin is running.
         if (isSpinning)
             return;
 
@@ -29,12 +31,12 @@ public class SlotMachineController : MonoBehaviour
     }
 
 
-    // Controls the complete spin sequence.
+    // Controls the reel sequence.
     private IEnumerator SpinAllReels()
     {
         isSpinning = true;
 
-        // Reel 3 starts first.
+        // Start Reel 3 first.
         reel3.Spin();
 
         // Wait before starting Reel 1.
@@ -49,14 +51,17 @@ public class SlotMachineController : MonoBehaviour
         // Start Reel 2.
         reel2.Spin();
 
-        // Wait until all reels have stopped.
+        // Wait until all reels stop.
         yield return new WaitUntil(() =>
             !reel1.IsSpinning &&
             !reel2.IsSpinning &&
             !reel3.IsSpinning
         );
 
-        // Allow the player to spin again.
+        // Check whether the player won or lost.
+        gameManager.CheckResult();
+
+        // Allow another spin.
         isSpinning = false;
     }
 }
