@@ -7,6 +7,7 @@ public class SlotLever : MonoBehaviour
     [SerializeField] private GameObject normalLever;
     [SerializeField] private GameObject pulledLever;
     [SerializeField] private SlotMachineController slotMachine;
+    [SerializeField] private BetManager betManager;
 
     private bool canPull = true;
     private Button leverButton;
@@ -27,10 +28,13 @@ public class SlotLever : MonoBehaviour
         if (!canPull)
             return;
 
+        // Stop the spin if the bet is below the minimum.
+        if (!betManager.ValidateBet())
+            return;
+
         StartCoroutine(Pull());
     }
 
-    // Disable the lever while the reels are spinning.
     private IEnumerator Pull()
     {
         canPull = false;
@@ -47,7 +51,6 @@ public class SlotLever : MonoBehaviour
         slotMachine.Spin();
     }
 
-    // Enables the lever for the next round.
     public void EnableLever()
     {
         canPull = true;
