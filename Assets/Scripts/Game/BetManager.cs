@@ -7,6 +7,8 @@ public class BetManager : MonoBehaviour
     [SerializeField] private TMP_Text rupeeSymbol;
     [SerializeField] private GameObject placeholder;
     [SerializeField] private GameObject warningPanel;
+    [SerializeField] private TMP_Text warningText;
+    [SerializeField] private BalanceManager balanceManager;
 
     [SerializeField] private int minimumBet = 50;
 
@@ -53,18 +55,24 @@ public class BetManager : MonoBehaviour
         }
     }
 
-    // Checks whether the entered bet is at least the minimum.
+    // Checks whether the entered bet is valid.
     public bool ValidateBet()
     {
         if (!int.TryParse(betInput.text, out int bet))
         {
-            ShowWarning();
+            ShowWarning("Minimum Bet is ₹" + minimumBet);
             return false;
         }
 
         if (bet < minimumBet)
         {
-            ShowWarning();
+            ShowWarning("Minimum Bet is ₹" + minimumBet);
+            return false;
+        }
+
+        if (bet > balanceManager.Balance)
+        {
+            ShowWarning("CHECK YOUR BALANCE!");
             return false;
         }
 
@@ -72,8 +80,9 @@ public class BetManager : MonoBehaviour
         return true;
     }
 
-    private void ShowWarning()
+    private void ShowWarning(string message)
     {
+        warningText.text = message;
         warningPanel.SetActive(true);
     }
 
@@ -96,6 +105,7 @@ public class BetManager : MonoBehaviour
             betInput.text
         ).x;
 
+        // Keep the rupee symbol just before the entered amount.
         rupeeSymbol.rectTransform.anchoredPosition =
             new Vector2(-textWidth / 2f - 18f, 0f);
     }
