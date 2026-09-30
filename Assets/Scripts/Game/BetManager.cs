@@ -96,6 +96,12 @@ public class BetManager : MonoBehaviour
         return currentBet;
     }
 
+    // Enables or disables the bet input.
+    public void SetBetInputEnabled(bool enabled)
+    {
+        betInput.interactable = enabled;
+    }
+
     private void UpdateRupeePosition()
     {
         if (string.IsNullOrEmpty(betInput.text))

@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -121,7 +121,133 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Yes_No_Btn_0
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 465
+        width: 371
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d41f2a1870cd5a24d9e7fd680cebe403
+      internalID: -1991371825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Yes_No_Btn_1
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 465
+        width: 371
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebb0c04d0186ff84193ae2b7a89d91ff
+      internalID: -1955797271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Yes_No_Btn_2
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 274
+        width: 371
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 549fe752790c8e14cad623edf6ff9884
+      internalID: -212557339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Yes_No_Btn_3
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 274
+        width: 371
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: da0cb599c8864db44801473b52d75ad4
+      internalID: 1797678564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Yes_No_Btn_4
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 83
+        width: 371
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2431650ea8764be4cabd4231f1c98d39
+      internalID: 1769217043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Yes_No_Btn_5
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 83
+        width: 371
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 07eeaf65dd828af489d87d4ba1cbee7d
+      internalID: 880299463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -132,7 +258,13 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Yes_No_Btn_0: -1991371825
+      Yes_No_Btn_1: -1955797271
+      Yes_No_Btn_2: -212557339
+      Yes_No_Btn_3: 1797678564
+      Yes_No_Btn_4: 1769217043
+      Yes_No_Btn_5: 880299463
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

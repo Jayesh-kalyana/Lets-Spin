@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections;
 
+
 public class SlotGameManager : MonoBehaviour
 {
     [SerializeField] private SlotReel reel1;
@@ -11,46 +12,110 @@ public class SlotGameManager : MonoBehaviour
 
     [SerializeField] private GameObject resultPanel;
     [SerializeField] private Button continueButton;
-    [SerializeField] private Button exitButton;
+    [SerializeField] private Button resultExitButton;
     [SerializeField] private SlotLever lever;
+    [SerializeField] private SlotMachineController slotMachine;
+    // Win sounds for each symbol.
+    [SerializeField] private AudioSource cherryWinSound;
+    [SerializeField] private AudioSource bellWinSound;
+    [SerializeField] private AudioSource sevenWinSound;
+
+    // Special sound for the BAR jackpot.
+    [SerializeField] private AudioSource jackpotSound;
+    // Plays when the player loses.
+[SerializeField] private AudioSource loseSound;
 
     [SerializeField] private BetManager betManager;
     [SerializeField] private BalanceManager balanceManager;
     [SerializeField] private TMP_Text payoutText;
 
-    // Payout multipliers for the symbol order.
+    // Payout multipliers for each symbol.
     [SerializeField] private float sevenMultiplier = 2.5f;
     [SerializeField] private float cherryMultiplier = 1.5f;
     [SerializeField] private float bellMultiplier = 2f;
     [SerializeField] private float barMultiplier = 5f;
+    // Exit confirmation popup.
+[SerializeField] private GameObject exitConfirmation;
+
+
 
     public void CheckResult()
     {
+        // Do not check the result while any reel is still spinning.
         if (reel1.IsSpinning || reel2.IsSpinning || reel3.IsSpinning)
             return;
 
+        // Allow exit after the reels have stopped.
+        resultExitButton.interactable = true;
+
+        // A win happens when all three center symbols match.
         bool win = reel1.ResultIndex == reel2.ResultIndex &&
                    reel2.ResultIndex == reel3.ResultIndex;
 
         if (win)
         {
             int bet = betManager.GetBet();
+
+            // Get the payout multiplier for the winning symbol.
             float multiplier = GetMultiplier(reel1.ResultIndex);
+
+            // Calculate the final payout.
             int payout = Mathf.RoundToInt(bet * multiplier);
 
+            // Add the payout to the player's balance.
             balanceManager.Add(payout);
 
-            payoutText.text = "YOU WON ₹" + payout +"! ";
+            // Play the sound for the winning symbol.
+            PlayWinSound(reel1.ResultIndex);
+
+            payoutText.text =
+                "CONGRATULATIONS!\n" +
+                "YOU WON ₹" + payout + "\n" +
+                multiplier + "X PAYOUT";
         }
         else
-        {
-            payoutText.text = "OPSS..YOU LOST IT!";
+        {   
+            // Play the lose sound when the symbols do not match.
+            loseSound.Play();
+            
+            // Show the loss message when the symbols do not match.
+            payoutText.text = "OPPS YOU LOST IT !";
         }
 
+        // Show the result panel after a short delay.
         StartCoroutine(ShowResult(win));
     }
 
-    // Matches the payout to the actual symbol index.
+
+    // Plays the correct sound based on the winning symbol.
+    private void PlayWinSound(int resultIndex)
+    {
+        switch (resultIndex)
+        {
+            case 0:
+                // 7 x 7 x 7
+                sevenWinSound.Play();
+                break;
+
+            case 1:
+                // Cherry x Cherry x Cherry
+                cherryWinSound.Play();
+                break;
+
+            case 2:
+                // Bell x Bell x Bell
+                bellWinSound.Play();
+                break;
+
+            case 3:
+                // BAR x BAR x BAR = Jackpot
+                jackpotSound.Play();
+                break;
+        }
+    }
+
+
+    // Returns the payout multiplier for the selected symbol.
     private float GetMultiplier(int resultIndex)
     {
         switch (resultIndex)
@@ -72,7 +137,8 @@ public class SlotGameManager : MonoBehaviour
         }
     }
 
-    // Show the result panel shortly after the reels stop.
+
+    // Shows the result panel shortly after the reels stop.
     private IEnumerator ShowResult(bool win)
     {
         yield return new WaitForSeconds(0.6f);
@@ -80,22 +146,60 @@ public class SlotGameManager : MonoBehaviour
         continueButton.GetComponentInChildren<TMP_Text>().text =
             win ? "LET'S SPIN AGAIN" : "STILL HAVE COURAGE";
 
-        exitButton.GetComponentInChildren<TMP_Text>().text =
+        resultExitButton.GetComponentInChildren<TMP_Text>().text =
             win ? "I'M OUT" : "BEING A LOSER ACCEPTED";
 
         resultPanel.SetActive(true);
     }
 
+
     public void ContinueBetting()
     {
         resultPanel.SetActive(false);
 
-        // Enable the lever for the next manual spin.
+        // Enable betting for the next spin.
+        betManager.SetBetInputEnabled(true);
+
+        // Enable the lever for the next spin.
         lever.EnableLever();
+
+        // Allow the player to use Exit again.
+        slotMachine.SetExitEnabled(true);
     }
+
 
     public void AcceptLoss()
     {
         resultPanel.SetActive(false);
+
+        // Enable betting for the next spin.
+        betManager.SetBetInputEnabled(true);
+
+        // Enable the lever for the next spin.
+        lever.EnableLever();
+
+        // Allow the player to use Exit again.
+        slotMachine.SetExitEnabled(true);
     }
+
+        public void ShowExitConfirmation()
+    {
+        // Show the exit confirmation popup.
+        exitConfirmation.SetActive(true);
+    }
+
+    public void CancelExit()
+    {
+        // Hide the exit confirmation popup.
+        exitConfirmation.SetActive(false);
+    }
+
+
+        public void ExitGame()
+    {   
+        // Close the game.
+        Application.Quit();
+        Debug.Log("Game exited.");
+    }
+
 }

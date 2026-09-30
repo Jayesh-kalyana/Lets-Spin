@@ -22,6 +22,9 @@ public class SlotReel : MonoBehaviour
     // Small extra distance used to keep symbols away from the visible edge.
     [SerializeField] private float edgePadding = 8f;
 
+    // Plays when this reel finishes spinning.
+[SerializeField] private AudioSource reelStopSound;
+
     // Prevents multiple spins at the same time.
     private bool isSpinning = false;
 
@@ -42,6 +45,7 @@ public class SlotReel : MonoBehaviour
 
     // Allows other scripts to read the final result.
     public int ResultIndex => resultIndex;
+    
 
 
     private void Awake()
@@ -161,6 +165,9 @@ public class SlotReel : MonoBehaviour
         Image centerImage = symbols[1].GetComponent<Image>();
         centerImage.sprite = availableSymbols[resultIndex];
 
+        // Play the stop sound when the reel finishes.
+        reelStopSound.Play();
+    
         isSpinning = false;
     }
 }
