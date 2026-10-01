@@ -18,6 +18,8 @@ public class SlotMachineController : MonoBehaviour
     // Audio sources for the two reel spinning sounds.
     [SerializeField] private AudioSource reelSpinSound1;
     [SerializeField] private AudioSource reelSpinSound2;
+    // Exit confirmation popup.
+    [SerializeField] private GameObject exitConfirmation;
 
     private bool isSpinning = false;
 
@@ -33,7 +35,12 @@ public class SlotMachineController : MonoBehaviour
     public void SetExitEnabled(bool enabled)
     {
         exitButton.interactable = enabled;
-        Debug.Log("EXIT INTERACTABLE = " + enabled);
+
+        // Close the Exit popup when Exit is disabled.
+        if (!enabled)
+        exitConfirmation.SetActive(false);
+
+    Debug.Log("EXIT INTERACTABLE = " + enabled);
     }
 
     private IEnumerator SpinAllReels()

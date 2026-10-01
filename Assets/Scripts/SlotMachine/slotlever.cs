@@ -46,6 +46,8 @@ public class SlotLever : MonoBehaviour
         // Deduct the bet from the player's balance.
         if (!balanceManager.Spend(betManager.GetBet()))
             return;
+            // Disable Exit as soon as the bet is placed.
+        slotMachine.SetExitEnabled(false);
 
         // Lock the bet input while the reels are spinning.
         betManager.SetBetInputEnabled(false);
