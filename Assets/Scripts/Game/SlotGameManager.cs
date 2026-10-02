@@ -39,52 +39,80 @@ public class SlotGameManager : MonoBehaviour
 
 
 
-    public void CheckResult()
+  public void CheckResult()
+{
+    // Do not check the result while any reel is still spinning.
+    if (reel1.IsSpinning || reel2.IsSpinning || reel3.IsSpinning)
+        return;
+
+    int result1 = reel1.ResultIndex;
+    int result2 = reel2.ResultIndex;
+    int result3 = reel3.ResultIndex;
+
+    // Check for three matching symbols.
+    bool tripleWin = result1 == result2 && result2 == result3;
+
+    // Check for two adjacent matching symbols.
+    bool pairWin = !tripleWin &&
+                   (result1 == result2 || result2 == result3);
+
+    if (tripleWin)
     {
-        // Do not check the result while any reel is still spinning.
-        if (reel1.IsSpinning || reel2.IsSpinning || reel3.IsSpinning)
-            return;
+        int bet = betManager.GetBet();
 
-        // Allow exit after the reels have stopped.
-        resultExitButton.interactable = true;
+        // Get the payout multiplier for the winning symbol.
+        float multiplier = GetMultiplier(result1);
 
-        // A win happens when all three center symbols match.
-        bool win = reel1.ResultIndex == reel2.ResultIndex &&
-                   reel2.ResultIndex == reel3.ResultIndex;
+        // Calculate the final payout.
+        int payout = Mathf.RoundToInt(bet * multiplier);
 
-        if (win)
-        {
-            int bet = betManager.GetBet();
+        // Add the payout to the player's balance.
+        balanceManager.Add(payout);
 
-            // Get the payout multiplier for the winning symbol.
-            float multiplier = GetMultiplier(reel1.ResultIndex);
+        // Play the winning sound.
+        PlayWinSound(result1);
 
-            // Calculate the final payout.
-            int payout = Mathf.RoundToInt(bet * multiplier);
-
-            // Add the payout to the player's balance.
-            balanceManager.Add(payout);
-
-            // Play the sound for the winning symbol.
-            PlayWinSound(reel1.ResultIndex);
-
-            payoutText.text =
-                "CONGRATULATIONS!\n" +
-                "YOU WON ₹" + payout + "\n" +
-                multiplier + "X PAYOUT";
-        }
-        else
-        {   
-            // Play the lose sound when the symbols do not match.
-            loseSound.Play();
-            
-            // Show the loss message when the symbols do not match.
-            payoutText.text = "OPPS YOU LOST IT !";
-        }
-
-        // Show the result panel after a short delay.
-        StartCoroutine(ShowResult(win));
+        payoutText.text =
+            "CONGRATULATIONS!\n" +
+            "YOU WON ₹" + payout + "\n" +
+            multiplier + "X PAYOUT";
     }
+    else if (pairWin)
+    {
+        int bet = betManager.GetBet();
+
+        // Use the matching adjacent symbol for the win sound.
+        int matchingSymbol = result1 == result2 ? result1 : result2;
+
+        // Small win for two adjacent matching symbols.
+        float multiplier = 1.25f;
+
+        // Calculate the final payout.
+        int payout = Mathf.RoundToInt(bet * multiplier);
+
+        // Add the payout to the player's balance.
+        balanceManager.Add(payout);
+
+        // Play the winning sound.
+        PlayWinSound(matchingSymbol);
+
+        payoutText.text =
+            "NICE!\n" +
+            "YOU WON ₹" + payout + "\n" +
+            multiplier + "X PAYOUT";
+    }
+    else
+    {
+        // Play lose sound.
+        loseSound.Play();
+
+        // Show the loss message.
+        payoutText.text = "OPPS YOU LOST IT !";
+    }
+
+    // Show the result panel after a short delay.
+    StartCoroutine(ShowResult(tripleWin || pairWin));
+}
 
 
     // Plays the correct sound based on the winning symbol.
