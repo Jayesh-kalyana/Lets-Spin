@@ -28,6 +28,8 @@ public class SlotGameManager : MonoBehaviour
     [SerializeField] private BetManager betManager;
     [SerializeField] private BalanceManager balanceManager;
     [SerializeField] private TMP_Text payoutText;
+    [SerializeField] private GameObject spaceHintPanel;
+    
 
     // Payout multipliers for each symbol.
     [SerializeField] private float sevenMultiplier = 2.5f;
@@ -37,7 +39,10 @@ public class SlotGameManager : MonoBehaviour
     // Exit confirmation popup.
 [SerializeField] private GameObject exitConfirmation;
 
-
+public void CloseSpaceHint()
+{
+    spaceHintPanel.SetActive(false);
+}
 
   public void CheckResult()
 {
