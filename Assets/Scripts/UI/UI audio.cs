@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class UIAudio : MonoBehaviour
 {
+    // Audio source used for UI click sounds.
     [SerializeField] private AudioSource clickSound;
 
     // Plays a normal UI click sound immediately.
@@ -19,4 +20,4 @@ public class UIAudio : MonoBehaviour
 
         clickSound.PlayOneShot(clickSound.clip);
     }
-}   
+}

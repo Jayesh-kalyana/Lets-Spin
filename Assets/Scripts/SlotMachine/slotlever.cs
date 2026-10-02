@@ -4,9 +4,13 @@ using System.Collections;
 
 public class SlotLever : MonoBehaviour
 {
+    // Visual shown when the lever is in its normal position.
     [SerializeField] private GameObject normalLever;
+
+    // Visual shown while the lever is being pulled.
     [SerializeField] private GameObject pulledLever;
 
+    // References needed to start the spin and manage the bet.
     [SerializeField] private SlotMachineController slotMachine;
     [SerializeField] private BetManager betManager;
     [SerializeField] private BalanceManager balanceManager;
@@ -46,7 +50,8 @@ public class SlotLever : MonoBehaviour
         // Deduct the bet from the player's balance.
         if (!balanceManager.Spend(betManager.GetBet()))
             return;
-            // Disable Exit as soon as the bet is placed.
+
+        // Disable Exit as soon as the bet is placed.
         slotMachine.SetExitEnabled(false);
 
         // Lock the bet input while the reels are spinning.

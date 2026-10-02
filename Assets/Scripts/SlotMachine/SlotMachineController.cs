@@ -3,13 +3,16 @@ using System.Collections;
 
 public class SlotMachineController : MonoBehaviour
 {
+    // References to the three slot reels.
     [SerializeField] private SlotReel reel1;
     [SerializeField] private SlotReel reel2;
     [SerializeField] private SlotReel reel3;
 
+    // Delay before Reel 1 and Reel 2 start spinning.
     [SerializeField] private float reel1StartDelay = 1.5f;
     [SerializeField] private float reel2StartDelay = 1f;
 
+    // Reference used to check the final spin result.
     [SerializeField] private SlotGameManager gameManager;
 
     // Main Exit button.
@@ -18,13 +21,16 @@ public class SlotMachineController : MonoBehaviour
     // Audio sources for the two reel spinning sounds.
     [SerializeField] private AudioSource reelSpinSound1;
     [SerializeField] private AudioSource reelSpinSound2;
+
     // Exit confirmation popup.
     [SerializeField] private GameObject exitConfirmation;
 
+    // Tracks whether the slot machine is currently spinning.
     private bool isSpinning = false;
 
     public void Spin()
     {
+        // Prevent another spin from starting while the machine is already spinning.
         if (isSpinning)
             return;
 
@@ -38,13 +44,14 @@ public class SlotMachineController : MonoBehaviour
 
         // Close the Exit popup when Exit is disabled.
         if (!enabled)
-        exitConfirmation.SetActive(false);
+            exitConfirmation.SetActive(false);
 
-    Debug.Log("EXIT INTERACTABLE = " + enabled);
+        Debug.Log("EXIT INTERACTABLE = " + enabled);
     }
 
     private IEnumerator SpinAllReels()
     {
+        // Mark the machine as spinning.
         isSpinning = true;
 
         // Disable Exit while the reels are spinning.
@@ -78,6 +85,7 @@ public class SlotMachineController : MonoBehaviour
             !reel3.IsSpinning
         );
 
+        // Mark the machine as no longer spinning.
         isSpinning = false;
 
         // Check the final result.

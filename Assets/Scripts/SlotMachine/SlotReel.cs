@@ -23,7 +23,7 @@ public class SlotReel : MonoBehaviour
     [SerializeField] private float edgePadding = 8f;
 
     // Plays when this reel finishes spinning.
-[SerializeField] private AudioSource reelStopSound;
+    [SerializeField] private AudioSource reelStopSound;
 
     // Prevents multiple spins at the same time.
     private bool isSpinning = false;
@@ -45,8 +45,6 @@ public class SlotReel : MonoBehaviour
 
     // Allows other scripts to read the final result.
     public int ResultIndex => resultIndex;
-    
-
 
     private void Awake()
     {
@@ -74,7 +72,6 @@ public class SlotReel : MonoBehaviour
         loopDistance = symbolSpacing * symbols.Length;
     }
 
-
     // Starts the reel spin.
     public void Spin()
     {
@@ -84,7 +81,6 @@ public class SlotReel : MonoBehaviour
 
         StartCoroutine(SpinReel());
     }
-
 
     // Handles the reel movement and selects a random result.
     private IEnumerator SpinReel()
@@ -167,7 +163,7 @@ public class SlotReel : MonoBehaviour
 
         // Play the stop sound when the reel finishes.
         reelStopSound.Play();
-    
+
         isSpinning = false;
     }
 }
