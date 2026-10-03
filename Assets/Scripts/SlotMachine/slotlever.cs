@@ -86,7 +86,11 @@ public class SlotLever : MonoBehaviour
         // Start the slot machine spin.
         slotMachine.Spin();
     }
-
+    public void SetLeverEnabled(bool enabled)
+{
+    canPull = enabled;
+    leverButton.interactable = enabled;
+}
     public void EnableLever()
     {
         // Allow the lever to be pulled again.

@@ -39,6 +39,9 @@ public class SlotGameManager : MonoBehaviour
     [SerializeField] private GameObject spaceHintPanel;
     [SerializeField] private GameObject thanksPanel;
 
+    // Background music played after the intro hint is closed.
+    [SerializeField] private AudioSource backgroundMusic;
+
 
     // Payout multipliers for each symbol.
     [SerializeField] private float sevenMultiplier = 2.5f;
@@ -49,12 +52,23 @@ public class SlotGameManager : MonoBehaviour
     // Exit confirmation popup.
     [SerializeField] private GameObject exitConfirmation;
 
+    private void Start()
+{
+    // Lock gameplay until the intro hint is closed.
+    betManager.SetBetInputEnabled(false);
+    lever.SetLeverEnabled(false);
+}
+
     // Closes the Space-to-Spin hint.
     public void CloseSpaceHint()
     {
         spaceHintPanel.SetActive(false);
-    }
 
+        betManager.SetBetInputEnabled(true);
+        lever.SetLeverEnabled(true);
+
+        backgroundMusic.Play();
+    }    
     public void CheckResult()
     {
         // Do not check the result while any reel is still spinning.
